@@ -343,4 +343,158 @@ KNN (k=5)   & 0.9007 & 0.0086 \\
   \item Developed visual and tabular analysis techniques for interpreting classification results.
 \end{itemize}
 
+\newpage
+\begin{titlepage}
+    \centering
+    \vspace*{3cm}
+    
+    {\LARGE \textbf{EXTENDED ASSIGNMENT - 3}}\\[1.5cm]
+    
+    {\Large \textbf{Ensemble Techniques and learning}}\\[2cm]
+    
+    {\large \textbf{Name:} Sreenethi G S}\\[0.4cm]
+    {\large \textbf{Register No.:} 31222371001052}\\[0.4cm]
+    
+    {\large \textit{MACHINE LEARNING LAB}}\\[6cm]
+    
+    \vfill
+\end{titlepage}
+
+
+\section{Introduction}
+In this assignment, we explore \textbf{ensemble learning methods}, which combine multiple models to improve prediction performance. We implemented:
+\begin{itemize}
+    \item Bagging Classifier
+    \item AdaBoost Classifier
+    \item Gradient Boosting Classifier
+    \item XGBoost Classifier
+\end{itemize}
+We further tuned the best-performing model and compared results against other methods.
+
+\section{Code Implementation}
+The following Python code was used for training, evaluation, and hyperparameter tuning:
+
+\begin{lstlisting}
+# Training Ensemble Methods
+print("\nTraining Ensemble Methods:")
+
+bagging = BaggingClassifier(
+    estimator=GaussianNB(),
+    n_estimators=50, random_state=42
+)
+bagging.fit(X_train_scaled, y_train)
+
+adaboost = AdaBoostClassifier(n_estimators=50, random_state=42)
+adaboost.fit(X_train_scaled, y_train)
+
+grad_boost = GradientBoostingClassifier(n_estimators=50, random_state=42)
+grad_boost.fit(X_train_scaled, y_train)
+
+xgb = XGBClassifier(
+    n_estimators=50, random_state=42,
+    use_label_encoder=False, eval_metric='logloss'
+)
+xgb.fit(X_train_scaled, y_train)
+\end{lstlisting}
+
+\section{Results and Analysis}
+
+\subsection{Bagging Classifier}
+Bagging reduces variance by combining predictions of multiple base models. We used \textbf{GaussianNB} as the base estimator.  
+\newline
+\textbf{Performance:}  
+Accuracy=0.8317, Precision=0.7131, Recall=0.9587, F1=0.8179, AUC=0.9385  
+
+\textbf{Placeholders for Images:}  
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{a.png}
+\includegraphics[width=0.45\textwidth]{b.png}
+\caption{Bagging Classifier - Confusion Matrix and ROC Curve}
+\end{figure}
+
+\subsection{AdaBoost Classifier}
+AdaBoost focuses on misclassified samples and builds sequential models with updated weights.  
+\newline
+\textbf{Performance:}  
+Accuracy=0.9186, Precision=0.9114, Recall=0.8788, F1=0.8948, AUC=0.9736  
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{c.png}
+\includegraphics[width=0.45\textwidth]{d.png}
+\caption{AdaBoost Classifier - Confusion Matrix and ROC Curve}
+\end{figure}
+
+\subsection{Gradient Boosting Classifier}
+Gradient Boosting builds learners sequentially, minimizing errors using gradient descent optimization.  
+\newline
+\textbf{Performance:}  
+Accuracy=0.9327, Precision=0.9263, Recall=0.9008, F1=0.9134, AUC=0.9805  
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{e.png}
+\includegraphics[width=0.45\textwidth]{f.png}
+\caption{Gradient Boosting - Confusion Matrix and ROC Curve}
+\end{figure}
+
+\subsection{XGBoost Classifier}
+XGBoost is an advanced boosting algorithm optimized for speed and performance.  
+\newline
+\textbf{Performance:}  
+Accuracy=0.9468, Precision=0.9361, Recall=0.9284, F1=0.9322, AUC=0.9869  
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{g.png}
+\includegraphics[width=0.45\textwidth]{h.png}
+\caption{XGBoost Classifier - Confusion Matrix and ROC Curve}
+\end{figure}
+
+\subsection{Hyperparameter Tuning - XGBoost}
+XGBoost was tuned with parameters:  
+\texttt{learning\_rate=0.1, max\_depth=9, n\_estimators=200, subsample=0.9}  
+
+\textbf{Performance:}  
+Accuracy=0.9501, Precision=0.9342, Recall=0.9394, F1=0.9368, AUC=0.9859  
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.45\textwidth]{i.png}
+\includegraphics[width=0.45\textwidth]{j.png}
+\caption{Tuned XGBoost - Confusion Matrix and ROC Curve}
+\end{figure}
+
+\section{Comparison of Ensemble Methods}
+Table~\ref{tab:comparison} shows the performance metrics of all ensemble methods.  
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Model & Accuracy & Precision & Recall & F1 Score & AUC \\
+\midrule
+Bagging & 0.8317 & 0.7131 & 0.9587 & 0.8179 & 0.9385 \\
+AdaBoost & 0.9186 & 0.9114 & 0.8788 & 0.8948 & 0.9736 \\
+Gradient Boosting & 0.9327 & 0.9263 & 0.9008 & 0.9134 & 0.9805 \\
+XGBoost & 0.9468 & 0.9361 & 0.9284 & 0.9322 & 0.9869 \\
+XGBoost Tuned & 0.9501 & 0.9342 & 0.9394 & 0.9368 & 0.9859 \\
+\bottomrule
+\end{tabular}
+\caption{Performance Comparison of Ensemble Methods}
+\label{tab:comparison}
+\end{table}
+
+\section{Conclusions}
+\begin{itemize}
+    \item Bagging performed well on recall (0.9587) but had lower precision.
+    \item AdaBoost improved balance between precision and recall.
+    \item Gradient Boosting achieved strong overall results.
+    \item XGBoost outperformed all base models, achieving high accuracy (0.9468).
+    \item After hyperparameter tuning, \textbf{XGBoost Tuned} achieved the best performance with accuracy of \textbf{0.9501}.
+\end{itemize}
+
+Thus, the final best model for this dataset is \textbf{XGBoost Tuned}.
+
 \end{document}
