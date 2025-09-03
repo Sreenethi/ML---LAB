@@ -270,6 +270,29 @@ for name, model in [('Gaussian NB', GaussianNB()),
 \caption{KNN (ball\_tree): Confusion Matrix and ROC}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{svm1.png}
+\includegraphics[width=0.45\textwidth]{svm2.png}
+\caption{SVM linear}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{svm3.png}
+\includegraphics[width=0.45\textwidth]{svm4.png}
+\caption{SVM Poly}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{svm5.png}
+\includegraphics[width=0.45\textwidth]{svm6.png}
+\caption{SVM ROC}
+\end{figure}
+
+
+
 \section*{Comparison Tables}
 
 \subsection*{Table 1: Naïve Bayes Variant Comparison}
@@ -315,25 +338,86 @@ KNN (ball\_tree) & 0.8993 & 0.8828 & 0.8585 & 0.8705 \\
 \end{tabular}
 \end{center}
 
-\subsection*{Table 4: 5-Fold Cross Validation}
-\begin{center}
-\begin{tabular}{lcc}
-\toprule
-\textbf{Model} & \textbf{Mean Accuracy} & \textbf{Std Dev} \\
-\midrule
-Gaussian NB & 0.8159 & 0.0137 \\
-KNN (k=5)   & 0.9007 & 0.0086 \\
-\bottomrule
+\subsection*{Table 4: Cross k-fold}
+\begin{table}[h!]
+\centering
+\caption{Table 5: K-Fold Cross-Validation Scores (Accuracy)}
+\begin{tabular}{lccc}
+\hline
+\textbf{Fold} & \textbf{Bernoulli NB} & \textbf{KNN GridSearchCV Best} & \textbf{SVM GridSearchCV Best} \\
+\hline
+Fold 1  & 0.880565 & 0.903366 & 0.934853 \\
+Fold 2  & 0.890217 & 0.917391 & 0.933696 \\
+Fold 3  & 0.883696 & 0.935870 & 0.922826 \\
+Fold 4  & 0.886957 & 0.914130 & 0.935870 \\
+Fold 5  & 0.890217 & 0.915217 & 0.930435 \\
+\hline
+Average & 0.886330 & 0.917195 & 0.931536 \\
+\hline
 \end{tabular}
-\end{center}
+\end{table}
 
+\subsection*{SVM }
+\begin{table}[h!]
+\centering
+\caption{Table 4 Part 1: SVM Kernels Performance (Default Params)}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 Score} & \textbf{AUC} \\
+\hline
+SVM Linear   & 0.930510 & 0.923513 & 0.898072 & 0.910615 & 0.969460 \\
+SVM Poly     & 0.779587 & 0.959770 & 0.460055 & 0.621974 & 0.955804 \\
+SVM Rbf      & 0.927253 & 0.927746 & 0.884298 & 0.905501 & 0.967367 \\
+SVM Sigmoid  & 0.883822 & 0.853591 & 0.851240 & 0.852414 & 0.937004 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\caption{Table 4 Part 2: SVM Performance with Different Kernels and Hyperparameters}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\hline
+\textbf{Index} & \textbf{Kernel} & \textbf{C} & \textbf{Degree} & \textbf{Gamma} & \textbf{Accuracy} & \textbf{F1 Score} & \textbf{Training Time (s)} \\
+\hline
+0  & linear   & 0.1  & --   & None  & 0.9245 & 0.9083 & 0.8604 \\
+1  & linear   & 1.0  & --   & None  & 0.9296 & 0.9106 & 1.6640 \\
+2  & linear   & 10.0 & --   & None  & 0.9293 & 0.9063 & 8.6968 \\
+3  & poly     & 0.1  & 2.0  & scale & 0.7101 & 0.4990 & 2.0643 \\
+4  & poly     & 0.1  & 2.0  & auto  & 0.7122 & 0.5081 & 2.5725 \\
+5  & poly     & 0.1  & 3.0  & scale & 0.6845 & 0.3921 & 2.0811 \\
+6  & poly     & 0.1  & 3.0  & auto  & 0.6859 & 0.3956 & 2.0671 \\
+7  & poly     & 1.0  & 2.0  & scale & 0.8334 & 0.7718 & 1.5868 \\
+8  & poly     & 1.0  & 2.0  & auto  & 0.8348 & 0.7805 & 1.5445 \\
+9  & poly     & 1.0  & 3.0  & scale & 0.7663 & 0.6220 & 1.7327 \\
+10 & poly     & 1.0  & 3.0  & auto  & 0.7685 & 0.6422 & 2.2915 \\
+11 & rbf      & 0.1  & --   & scale & 0.9062 & 0.8835 & 1.7240 \\
+12 & rbf      & 0.1  & --   & auto  & 0.9054 & 0.8851 & 1.7482 \\
+13 & rbf      & 1.0  & --   & scale & 0.9340 & 0.9055 & 1.1535 \\
+14 & rbf      & 1.0  & --   & auto  & 0.9340 & 0.9055 & 1.1614 \\
+15 & rbf      & 10.0 & --   & scale & 0.9332 & 0.9001 & 1.0320 \\
+16 & rbf      & 10.0 & --   & auto  & 0.9332 & 0.9001 & 1.0397 \\
+17 & sigmoid  & 0.1  & --   & scale & 0.8910 & 0.8530 & 2.2287 \\
+18 & sigmoid  & 0.1  & --   & auto  & 0.8916 & 0.8547 & 1.7627 \\
+19 & sigmoid  & 1.0  & --   & scale & 0.8804 & 0.8524 & 1.1914 \\
+20 & sigmoid  & 1.0  & --   & auto  & 0.8804 & 0.8508 & 1.1597 \\
+\hline
+\end{tabular}}
+\end{table}
+
+\newpage
 \section*{Observations and Conclusion}
 \begin{itemize}
   \item \textbf{KNN (k=5)} achieved the best performance across all metrics and cross-validation.
   \item \textbf{Multinomial NB} outperformed other Naïve Bayes models in terms of accuracy and F1-score.
   \item \textbf{KNN using kd\_tree and ball\_tree} performed identically in this dataset.
   \item Naïve Bayes models are faster but slightly less accurate than tuned KNN.
+  \item The best Naïve Bayes variant was \textbf{Bernoulli NB} with an accuracy of 0.8762.
+  \item The best KNN model achieved an accuracy of \textbf{0.9110}.
+  \item The best SVM model achieved an accuracy of \textbf{0.9273}.
 \end{itemize}
+
 
 \section*{Learning Outcome}
 \begin{itemize}
