@@ -416,6 +416,28 @@ SVM Sigmoid  & 0.883822 & 0.853591 & 0.851240 & 0.852414 & 0.937004 \\
   \item The best Naïve Bayes variant was \textbf{Bernoulli NB} with an accuracy of 0.8762.
   \item The best KNN model achieved an accuracy of \textbf{0.9110}.
   \item The best SVM model achieved an accuracy of \textbf{0.9273}.
+
+\subsection*{Key Questions Answered}
+\begin{itemize}
+  \item \textbf{Which classifier had the best average accuracy?}  
+  The \textbf{SVM with RBF kernel} achieved the best overall average accuracy of 0.9340 (from cross-validation and hyperparameter tuning).
+
+  \item \textbf{Which Naïve Bayes variant worked best?}  
+  The \textbf{Bernoulli NB} variant gave the best result among Naïve Bayes models with an accuracy of 0.8762, while Multinomial NB had better F1 performance.
+
+  \item \textbf{How did KNN accuracy vary with k and tree type?}  
+  KNN showed peak performance at \textbf{k=5}, achieving an accuracy of 0.9110. Both \texttt{kd\_tree} and \texttt{ball\_tree} implementations produced identical results on this dataset, confirming robustness.
+
+  \item \textbf{Which SVM kernel was most effective?}  
+  The \textbf{RBF kernel} consistently outperformed other kernels (Linear, Polynomial, and Sigmoid) across accuracy, precision, recall, and F1-score.
+
+  \item \textbf{How did hyperparameters influence performance?}  
+  For SVM, tuning \textbf{C} and \textbf{Gamma} values significantly improved performance, especially with the RBF kernel. For KNN, smaller values of \textbf{k} (e.g., k=5) provided better generalization. Naïve Bayes was less sensitive to hyperparameter tuning but remained computationally faster than KNN and SVM.
+\end{itemize}
+
+\subsection*{Overall Conclusion}
+Among all models tested, \textbf{SVM with RBF kernel and tuned hyperparameters} emerged as the best-performing classifier with the highest accuracy and balanced metrics. KNN (k=5) was the second-best performer, while Naïve Bayes offered a faster but slightly less accurate alternative.
+
 \end{itemize}
 
 
