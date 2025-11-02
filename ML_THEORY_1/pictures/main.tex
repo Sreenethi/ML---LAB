@@ -1,0 +1,539 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{array}
+
+\geometry{margin=1in}
+
+\title{
+    \textbf{Sri Sivasubramaniya Nadar College of Engineering, Chennai} \\
+    \textbf{Department of Computer Science and Engineering} \\
+    \vspace{0.5cm}
+    \textbf{CAT Assignment 1} \\
+    \large Degree \& Branch: M. Tech (Integrated) Computer Science \& Engineering \\
+    Semester: V \\
+    Subject Code \& Name: ICS1502 \& Introduction to Machine Learning \\
+    Academic year: 2025-2026 (Odd) Batch: 2023-2028
+}
+\author{Submitted by: Sreenethi G S \\ Register Number: 3122237001052}
+\date{Submission Date: 02nd November 2025}
+
+\begin{document}
+
+\maketitle
+
+\smallskip
+\smallskip
+\smallskip
+\medskip
+
+\section*{Aims and Objectives}
+This comprehensive report documents my implementation and analysis of two fundamental machine learning paradigms. The primary aims of this assignment were:
+
+\textbf{1.1 Regression Analysis:} To critically evaluate the implementation of Linear Regression for mobile phone price prediction using matrix approaches, examining the suitability of this technique through closed-form solutions, gradient descent optimization, and L2 regularization while assessing feature importance and model generalization.
+
+\smallskip
+
+\textbf{1.2 Linear Classification:} To implement and evaluate a linear classification model for bank note authentication, analyzing regularization effects, model robustness to outliers, and feature discriminative power in binary classification tasks.
+
+Both projects required systematic implementation, rigorous evaluation, and comprehensive analysis of machine learning fundamentals.
+
+\newpage
+
+\section{Programming Assignment 1.1: Mobile Phone Price Prediction Using Linear Regression}
+
+\subsection{Project Overview and Implementation Strategy}
+In this project, I developed a comprehensive linear regression framework to predict mobile phone prices based on technical specifications. My implementation approach was methodical, beginning with extensive exploratory data analysis, followed by implementing multiple optimization algorithms, and concluding with thorough model evaluation and feature analysis.
+
+\subsection{Dataset Analysis and Preprocessing Methodology}
+I commenced by conducting a detailed examination of the mobile phone dataset comprising 161 samples with 14 distinct features. The dataset demonstrated excellent data quality with no missing values across all features, which facilitated straightforward preprocessing.
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive Dataset Statistical Analysis}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Feature} & \textbf{Mean} & \textbf{Std Dev} & \textbf{Min} & \textbf{25\%} & \textbf{75\%} & \textbf{Max} \\
+\midrule
+Price & 2215.60 & 768.19 & 614.00 & 1734.00 & 2744.00 & 4361.00 \\
+RAM (GB) & 2.20 & 1.61 & 0.00 & 1.00 & 3.00 & 6.00 \\
+PPI & 335.06 & 134.83 & 121.00 & 233.00 & 428.00 & 806.00 \\
+Internal Memory (GB) & 24.50 & 28.80 & 0.00 & 8.00 & 32.00 & 128.00 \\
+Battery (mAh) & 2842.11 & 1366.99 & 800.00 & 2040.00 & 3240.00 & 9500.00 \\
+Thickness (mm) & 8.92 & 2.19 & 5.10 & 7.60 & 9.80 & 18.50 \\
+CPU Cores & 4.86 & 2.44 & 0.00 & 4.00 & 8.00 & 8.00 \\
+CPU Frequency (GHz) & 1.50 & 0.60 & 0.00 & 1.20 & 1.88 & 2.70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comprehensive Exploratory Data Analysis}
+I performed extensive exploratory data analysis to uncover underlying patterns, relationships, and correlations within the dataset. This analysis provided crucial insights into feature importance and guided my feature selection strategy.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{price_distribution.png}
+    \caption{Price Distribution Analysis}
+    \label{fig:price_dist}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{feature_correlation.png}
+    \caption{Feature Correlation Matrix}
+    \label{fig:corr_matrix}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{top_correlations.png}
+    \caption{Top Feature Correlations}
+    \label{fig:top_corr}
+\end{subfigure}
+\\
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{price_vs_ram.png}
+    \caption{Price vs RAM Relationship}
+    \label{fig:price_ram}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{price_vs_ppi.png}
+    \caption{Price vs PPI Relationship}
+    \label{fig:price_ppi}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{price_vs_memory.png}
+    \caption{Price vs Internal Memory}
+    \label{fig:price_memory}
+\end{subfigure}
+\caption{Comprehensive Exploratory Data Analysis Visualizations}
+\label{fig:eda_comprehensive}
+\end{figure}
+
+\subsubsection{Key Correlation Insights and Business Implications}
+My correlation analysis revealed several significant relationships that directly impact mobile phone pricing strategies:
+
+\begin{table}[H]
+\centering
+\caption{Detailed Feature Correlation Analysis with Price}
+\begin{tabular}{lcl}
+\toprule
+\textbf{Feature} & \textbf{Correlation Coefficient} & \textbf{Business Interpretation} \\
+\midrule
+RAM & 0.897 & Strongest positive correlation indicating performance premium \\
+PPI & 0.818 & High display quality commands significant price premium \\
+Internal Memory & 0.777 & Storage capacity substantially influences pricing \\
+Rear Camera & 0.740 & Camera system quality impacts consumer pricing \\
+CPU Frequency & 0.727 & Processing speed contributes to perceived value \\
+CPU Cores & 0.687 & Multi-core processing capability affects pricing \\
+Front Camera & 0.675 & Selfie camera quality influences market positioning \\
+Battery & 0.560 & Battery life moderately affects price points \\
+Resolution & 0.404 & Screen resolution has moderate pricing impact \\
+Thickness & -0.717 & Slimmer designs command significant market premium \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Closed-Form Solution Implementation}
+I implemented the closed-form solution using the normal equation approach, which provides the exact mathematical solution for linear regression parameters:
+
+\begin{equation}
+\mathbf{w} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
+\end{equation}
+
+\textbf{Implementation Details:}
+\begin{itemize}
+\item Feature matrix $\mathbf{X}$ dimensions: 128 × 13 (including bias term)
+\item Label vector $\mathbf{y}$ dimensions: 128 × 1
+\item Parameter vector $\mathbf{w}$ dimensions: 13 × 1
+\item Training samples: 128 phones (80\% of dataset)
+\item Testing samples: 33 phones (20\% of dataset)
+\end{itemize}
+
+\subsection{Gradient Descent Optimization Implementation}
+For comparative analysis, I implemented batch gradient descent with careful parameter tuning:
+
+\begin{equation}
+\mathbf{w} := \mathbf{w} - \alpha \nabla J(\mathbf{w})
+\end{equation}
+
+\begin{equation}
+\nabla J(\mathbf{w}) = \frac{1}{m}\mathbf{X}^T(\mathbf{X}\mathbf{w} - \mathbf{y})
+\end{equation}
+
+\textbf{Optimization Parameters:}
+\begin{itemize}
+\item Learning rate ($\alpha$): 0.01 (determined through experimentation)
+\item Training epochs: 2000 (ensuring convergence)
+\item Initial cost: 5,465,383 (demonstrating random initialization)
+\item Final cost: 28,702 (achieving convergence)
+\end{itemize}
+
+\subsection{Model Performance Evaluation and Comparison}
+I conducted rigorous evaluation of both implementations using multiple performance metrics to ensure comprehensive assessment:
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive Model Performance Comparison}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Implementation Method} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{R² Score} \\
+\midrule
+Closed-Form Solution & 21,880.49 & 147.92 & 123.46 & 0.9614 \\
+Gradient Descent & 22,245.31 & 149.15 & 122.47 & 0.9608 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Prediction Accuracy Visualization and Convergence Analysis}
+I generated detailed visualizations to compare prediction accuracy between methods and analyze the convergence behavior of gradient descent:
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{closed_form_predictions.png}
+    \caption{Closed-Form Solution: Predicted vs Actual Prices}
+    \label{fig:closed_form_pred}
+\end{subfigure}
+\begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{gradient_descent_predictions.png}
+    \caption{Gradient Descent: Predicted vs Actual Prices}
+    \label{fig:gd_pred}
+\end{subfigure}
+\\
+\begin{subfigure}{0.8\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{cost_history.png}
+    \caption{Gradient Descent Convergence Analysis}
+    \label{fig:gd_convergence}
+\end{subfigure}
+\caption{Prediction Accuracy and Optimization Convergence Analysis}
+\label{fig:prediction_analysis}
+\end{figure}
+
+\subsection{Ridge Regression with L2 Regularization}
+I implemented Ridge Regression to enhance model generalization and prevent overfitting, systematically evaluating multiple regularization strengths:
+
+\begin{equation}
+\mathbf{w} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}
+\end{equation}
+
+\begin{table}[H]
+\centering
+\caption{Systematic Ridge Regression Performance Analysis}
+\begin{tabular}{lcccc}
+\toprule
+$\lambda$ & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{R² Score} \\
+\midrule
+0 & 21,880.49 & 147.92 & 123.46 & 0.9614 \\
+0.1 & 21,913.59 & 148.03 & 123.40 & 0.9613 \\
+1 & 22,206.73 & 149.02 & 123.28 & 0.9608 \\
+10 & 25,227.66 & 158.83 & 125.54 & 0.9555 \\
+100 & 52,260.93 & 228.61 & 172.23 & 0.9078 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{ridge_predictions_grid.png}
+\caption{Ridge Regression Performance Across Regularization Parameters}
+\label{fig:ridge_performance}
+\end{figure}
+
+\subsection{Standardization Impact Analysis}
+I conducted a comparative analysis to evaluate the effect of feature standardization on regularized model performance:
+
+\begin{table}[H]
+\centering
+\caption{Standardization Impact Analysis on Ridge Regression ($\lambda=1$)}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Performance Metric} & \textbf{Without Standardization} & \textbf{With Standardization} & \textbf{Performance Impact} \\
+\midrule
+MSE & 21,903.47 & 22,206.73 & +1.39\% \\
+RMSE & 148.00 & 149.02 & +0.69\% \\
+MAE & 123.13 & 123.28 & +0.12\% \\
+R² Score & 0.9614 & 0.9608 & -0.06\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comprehensive Feature Importance Analysis}
+I conducted detailed feature importance analysis using the learned weights from L2 regularized models to understand pricing determinants:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{feature_importance.png}
+\caption{Feature Importance Analysis from L2 Regularized Weights}
+\label{fig:feature_importance}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Detailed Feature Importance and Business Impact Analysis}
+\begin{tabular}{lrrl}
+\toprule
+\textbf{Feature} & \textbf{Weight Magnitude} & \textbf{Coefficient} & \textbf{Pricing Strategy Insight} \\
+\midrule
+Internal Memory & 165.14 & +165.14 & Each additional GB adds significant value \\
+RAM & 164.37 & +164.37 & Performance improvements command premium pricing \\
+Thickness & 154.93 & -154.93 & Slimmer designs justify higher price points \\
+Battery & 154.29 & +154.29 & Extended battery life increases perceived value \\
+PPI & 152.76 & +152.76 & Display quality substantially impacts pricing \\
+CPU Core & 122.87 & +122.87 & Multi-core processing enhances product positioning \\
+Resolution & 78.96 & -78.96 & Size-quality trade-off affects consumer choice \\
+CPU Frequency & 75.47 & +75.47 & Processing speed contributes to premium positioning \\
+Weight & 53.19 & -53.19 & Lighter devices command market premium \\
+Front Camera & 33.24 & +33.24 & Selfie camera quality influences target demographics \\
+Sale & 31.39 & -31.39 & Discount strategies affect perceived value \\
+Rear Camera & 24.55 & +24.55 & Main camera system supports premium pricing \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Regularization Strength Optimization Analysis}
+I systematically investigated the relationship between regularization strength and model performance to identify optimal hyperparameters:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{lambda_performance.png}
+\caption{Model Performance vs Regularization Strength Optimization Analysis}
+\label{fig:lambda_performance}
+\end{figure}
+
+\subsection{Key Findings: Mobile Phone Price Prediction}
+\begin{itemize}
+\item \textbf{Superior Model Performance}: The closed-form solution achieved marginally better performance (R² = 0.9614) compared to gradient descent (R² = 0.9608), demonstrating the effectiveness of direct mathematical solutions for this problem scale.
+
+\item \textbf{Optimal Regularization Strategy}: Moderate L2 regularization ($\lambda=1$) provided the ideal balance, maintaining 96.08\% accuracy while enhancing model generalization capabilities.
+
+\item \textbf{Feature Importance Hierarchy}: Technical specifications (RAM, internal memory, processor capabilities) demonstrated stronger pricing influence than physical attributes, with RAM emerging as the most significant price determinant.
+
+\item \textbf{Standardization Impact}: Feature standardization showed minimal performance impact (0.06\% R² decrease), indicating that original feature scales were appropriately balanced for this dataset.
+
+\item \textbf{Consumer Behavior Insights}: The strong negative coefficient for thickness (-154.93) reveals significant consumer preference for slim designs, providing valuable market intelligence for product development.
+\end{itemize}
+
+\newpage
+
+\section{Programming Assignment 1.2: Bank Note Authentication Using Linear Classification}
+
+\subsection{Project Overview and Classification Strategy}
+In this project, I developed a robust binary classification system for bank note authentication using logistic regression with systematic regularization analysis. My implementation focused on model generalization, robustness evaluation, and comprehensive performance assessment.
+
+\subsection{Dataset Characteristics and Preprocessing}
+The bank note authentication dataset comprised 1,372 samples with four wavelet-transformed image features. I implemented careful preprocessing to maintain data integrity and class distribution balance.
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive Bank Note Dataset Analysis}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Feature} & \textbf{Mean} & \textbf{Std Dev} & \textbf{Min} & \textbf{25\%} & \textbf{75\%} & \textbf{Max} \\
+\midrule
+Variance & 0.434 & 2.843 & -7.042 & -1.773 & 2.821 & 6.825 \\
+Skewness & 1.922 & 5.869 & -13.773 & -1.708 & 6.815 & 12.952 \\
+Curtosis & 1.398 & 4.310 & -5.286 & -1.575 & 3.179 & 17.927 \\
+Entropy & -1.192 & 2.101 & -8.548 & -2.413 & 0.395 & 2.450 \\
+Class & 0.445 & 0.497 & 0.000 & 0.000 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Stratified Dataset Partitioning}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Partition} & \textbf{Authentic (0)} & \textbf{Counterfeit (1)} & \textbf{Total} \\
+\midrule
+Training Set & 533 (55.5\%) & 427 (44.5\%) & 960 \\
+Testing Set & 229 (55.6\%) & 183 (44.4\%) & 412 \\
+Overall Dataset & 762 (55.5\%) & 610 (44.5\%) & 1,372 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Exploratory Data Analysis and Feature Assessment}
+I conducted preliminary analysis to understand feature distributions and their discriminative power for classification tasks:
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{class_distribution.png}
+    \caption{Class Distribution Analysis}
+    \label{fig:class_dist}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{variance_distribution.png}
+    \caption{Variance Feature Distribution by Class}
+    \label{fig:variance_dist}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{correlation_heatmap.png}
+    \caption{Feature Correlation Analysis}
+    \label{fig:bank_corr}
+\end{subfigure}
+\caption{Comprehensive Bank Note Dataset Exploration}
+\label{fig:bank_eda}
+\end{figure}
+
+\subsubsection{Feature Discriminative Power Analysis}
+My correlation analysis revealed the relative importance of each feature for classification:
+
+\begin{table}[H]
+\centering
+\caption{Feature Discriminative Power Assessment}
+\begin{tabular}{lcl}
+\toprule
+\textbf{Feature} & \textbf{Correlation with Class} & \textbf{Classification Impact} \\
+\midrule
+Variance & 0.7248 & Strongest discriminative power \\
+Skewness & 0.4447 & Moderate classification capability \\
+Curtosis & 0.1559 & Limited discriminative contribution \\
+Entropy & 0.0234 & Minimal classification impact \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Systematic Regularization Parameter Optimization}
+I conducted extensive experimentation with L2 regularization strengths to optimize model generalization and prevent overfitting:
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive Regularization Parameter Analysis}
+\begin{tabular}{lcccc}
+\toprule
+$\lambda$ & \textbf{Train Accuracy} & \textbf{Test Accuracy} & \textbf{Weight Norm} & \textbf{Generalization} \\
+\midrule
+0 & 98.85\% & 98.79\% & 65.30 & Slight overfitting \\
+0.001 & 98.85\% & 98.79\% & 60.51 & Minimal improvement \\
+0.01 & 98.96\% & 99.03\% & 43.63 & \textbf{Optimal balance} \\
+0.1 & 99.17\% & 99.03\% & 24.52 & Excellent generalization \\
+1 & 98.33\% & 97.82\% & 13.51 & Mild underfitting \\
+10 & 97.60\% & 97.33\% & 7.74 & Moderate underfitting \\
+100 & 93.85\% & 93.93\% & 3.31 & Significant underfitting \\
+1000 & 81.67\% & 84.95\% & 0.45 & Excessive regularization \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{accuracy_vs_lambda.png}
+\caption{Regularization Parameter Optimization Analysis}
+\label{fig:bank_lambda}
+\end{figure}
+
+\subsection{Feature Space Visualization and Separability Analysis}
+I created three-dimensional visualizations to examine the linear separability of authentic and counterfeit notes in the feature space:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{3d_visualization.png}
+\caption{3D Feature Space Visualization of Bank Note Authentication}
+\label{fig:3d_visualization}
+\end{figure}
+
+\subsection{Robustness Analysis: Comprehensive Outlier Impact Assessment}
+I evaluated model robustness through controlled outlier injection, assessing performance degradation and parameter stability under adverse conditions.
+
+\subsubsection{Outlier Injection Methodology}
+\begin{itemize}
+\item \textbf{Contamination Rate}: 15\% of training samples (144 samples)
+\item \textbf{Feature Corruption}: ±2.5 standard deviation shifts in feature values
+\item \textbf{Label Noise}: 30\% of corrupted samples received flipped labels (43 samples)
+\item \textbf{Corruption Type}: Combined feature corruption and label noise for realistic assessment
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive Outlier Impact Analysis}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Performance Metric} & \textbf{Clean Data} & \textbf{Contaminated Data} & \textbf{Degradation} \\
+\midrule
+Test Accuracy & 97.82\% & 95.63\% & 2.19\% \\
+Precision & 97.54\% & 95.21\% & 2.33\% \\
+Recall & 97.81\% & 95.63\% & 2.18\% \\
+F1-Score & 97.67\% & 95.42\% & 2.25\% \\
+Specificity & 97.82\% & 95.63\% & 2.19\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{outlier_impact.png}
+\caption{Comparative Performance Analysis Under Outlier Conditions}
+\label{fig:outlier_impact}
+\end{figure}
+
+\subsubsection{Parameter Stability and Weight Analysis}
+I examined the impact of outliers on model parameters to assess learning stability and robustness:
+
+\begin{table}[H]
+\centering
+\caption{Parameter Stability Analysis Under Outlier Conditions}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Feature} & \textbf{Weight Change Magnitude} & \textbf{Stability Assessment} \\
+\midrule
+Variance & 2.3323 & Moderate stability \\
+Skewness & 3.2793 & Lower stability \\
+Curtosis & 3.0951 & Lower stability \\
+Entropy & 0.0755 & High stability \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+
+\subsection{Key Findings: Bank Note Authentication}
+\begin{itemize}
+\item \textbf{Exceptional Classification Performance}: The model achieved 99.03\% test accuracy with optimal regularization ($\lambda=0.01$), demonstrating near-perfect classification capability on authentic bank note detection.
+
+\item \textbf{Optimal Regularization Strategy}: Mild L2 regularization ($\lambda=0.01-0.1$) provided the perfect balance between training accuracy and generalization performance, with test accuracy exceeding training accuracy in some configurations.
+
+\item \textbf{Feature Dominance Analysis}: Wavelet variance emerged as the dominant discriminative feature (correlation: 0.7248), providing strong separation between authentic and counterfeit notes.
+
+\item \textbf{Exceptional Robustness}: The model demonstrated remarkable resilience to outliers, with only 2.19\% accuracy degradation despite 15\% data contamination with combined feature corruption and label noise.
+
+\item \textbf{Linear Separability Confirmation}: The clear separation observed in 3D visualizations confirms the dataset's strong linear separability, explaining the exceptional classification performance.
+\end{itemize}
+
+\section{Learning Outcomes}
+
+Through comprehensive implementation of both machine learning projects, I have achieved five key learning outcomes:
+
+\begin{enumerate}
+\item \textbf{Matrix-Based Optimization Mastery}: Developed proficiency in implementing both closed-form solutions and gradient descent optimization, understanding their computational trade-offs and convergence behaviors for different problem scales.
+
+\item \textbf{Regularization Expertise}: Gained practical understanding of L2 regularization's impact on model generalization, learning to identify optimal regularization strengths that balance bias-variance tradeoff effectively.
+
+\item \textbf{Comprehensive Model Evaluation}: Mastered multiple evaluation metrics (MSE, RMSE, MAE, R² for regression; Accuracy, Precision, Recall, F1-Score for classification) and their practical interpretation in real-world contexts.
+
+\item \textbf{Feature Analysis and Business Insight Generation}: Acquired skills in correlation analysis, feature importance assessment, and translating technical findings into actionable business intelligence for decision-making.
+
+\item \textbf{Robust Experimental Methodology}: Developed systematic approaches for hyperparameter optimization, outlier robustness testing, and reproducible experimental design ensuring reliable model performance.
+\end{enumerate}
+
+\end{document}
